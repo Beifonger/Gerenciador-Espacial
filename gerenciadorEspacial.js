@@ -90,5 +90,23 @@ function adicionarMissao() {
     });
   });
 }
-exibirMenu();
 
+function listarMissoes() {
+  console.log("=======LISTAR MISSÕES=======");
+  if (missoes.length === 0) {
+    console.log("Não existem missões cadastradas.");
+  } else {
+    missoes.forEach((missao, index) => {
+      console.log(
+        `\nÍndice: ${index + 1} \nNome da missão: ${
+          missao.nome
+        } \nDestino da missão: ${missao.destino} \nPrioridade da missão: ${
+          missao.prioridade
+        } \n Tripulantes: ${missao.tripulantes}\n`
+      );
+    });
+  }
+  exibirMenu();
+}
+
+exibirMenu();
