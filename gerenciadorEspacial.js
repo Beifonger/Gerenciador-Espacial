@@ -243,8 +243,9 @@ function atualizarStatus() {
   console.log("\n=======ATUALIZAR STATUS=======\n");
   if (missoes.length === 0) {
     console.log("Não há nenhuma missão cadastrada para atualizar o status.");
-    exibirMenu();
+    return exibirMenu();
   }
+
   console.log("Missões cadastradas:");
   missoes.forEach((missao, index) => {
     console.log(
@@ -255,20 +256,25 @@ function atualizarStatus() {
       }\nTripulantes: ${missao.tripulantes}\nConcluída: ${missao.status}\n`
     );
   });
-  rl.question("\nDigite o número da missão que deseja editar: ", (indice) => {
+
+  rl.question("\nDigite o número da missão que deseja marcar como concluída: ", (indice) => {
     const i = parseInt(indice) - 1;
+
     if (isNaN(i) || i < 0 || i >= missoes.length) {
       console.log("Índice inválido.");
       return atualizarStatus();
     }
-    rl.question("Marcar missão como concluída? (S/N): ", (opcao) => {
-      let opcaoFormatada = opcao.toLowerCase();
+
+    rl.question("Tem certeza que deseja marcar essa missão como concluída e removê-la? (S/N): ", (opcao) => {
+      const opcaoFormatada = opcao.toLowerCase();
+
       if (opcaoFormatada === "s") {
-        missoes[i].status = true;
-        console.log("Missão marcada como concluída.");
-        return exibirMenu();
+        const nomeRemovida = missoes[i].nome;
+        missoes.splice(i, 1);
+        console.log(`Missão "${nomeRemovida}" concluída e removida com sucesso.`);
+        exibirMenu();
       } else if (opcaoFormatada === "n") {
-        return exibirMenu();
+        exibirMenu();
       } else {
         console.log("Informe uma opção válida.");
         atualizarStatus();
@@ -276,6 +282,40 @@ function atualizarStatus() {
     });
   });
 }
+
+function filtrarPorPrioridade() {
+  console.log("\n======= FILTRAR POR PRIORIDADE =======\n");
+
+  if (missoes.length === 0) {
+    console.log("Não há nenhuma missão cadastrada para filtrar.");
+    return exibirMenu();
+  }
+
+  rl.question("Informe o nível de prioridade (1-5): ", (prioridade) => {
+    const prioridadeFormatada = parseInt(prioridade);
+
+    if (isNaN(prioridadeFormatada) || prioridadeFormatada < 1 || prioridadeFormatada > 5) {
+      console.log("Por favor, informe um número válido.");
+      return filtrarPorPrioridade();
+    }
+
+    const missoesFiltradas = missoes.filter(
+      (missao) => missao.prioridade === prioridadeFormatada
+    );
+
+    if (missoesFiltradas.length === 0) {
+      console.log(
+        `Nenhuma missão com prioridade ${prioridadeFormatada} foi encontrada.`
+      );
+    } else {
+      console.log(`\nMissões com prioridade ${prioridadeFormatada}:\n`);
+      missoesFiltradas.forEach((missao) => {
+        console.log(`Nome da missão: ${missao.nome}`);
+        console.log(`Prioridade: ${missao.prioridade}\n`);
+      });
+    }
+
+    exibirMenu();
+  });
+}
 exibirMenu();
-
-
