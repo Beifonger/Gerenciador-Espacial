@@ -19,7 +19,7 @@ function exibirMenu() {
   console.log("8 - SAIR");
 
   rl.question("Escolha uma das opções: ", (opcao) => {
-    opcaoFormatada = parseInt(opcao);
+    let opcaoFormatada = parseInt(opcao);
 
     switch (opcaoFormatada) {
       case 1:
@@ -55,7 +55,7 @@ function exibirMenu() {
 }
 
 function adicionarMissao() {
-  console.log("=======CADASTRO DE MISSÃO=======");
+  console.log("\n=======CADASTRO DE MISSÃO=======\n");
   rl.question("Informe o nome da missão: ", (nome) => {
     rl.question("Informe o destino (ex: Marte): ", (destino) => {
       function perguntarPrioridade() {
@@ -78,6 +78,7 @@ function adicionarMissao() {
                   destino: destino,
                   prioridade: prioridadeFormatada,
                   tripulantes: tripulantes,
+                  status: false,
                 });
                 console.log("Missão cadastrada com sucesso.\n");
                 exibirMenu();
@@ -92,21 +93,149 @@ function adicionarMissao() {
 }
 
 function listarMissoes() {
-  console.log("=======LISTAR MISSÕES=======");
+  console.log("\n=======LISTAR MISSÕES=======\n");
   if (missoes.length === 0) {
     console.log("Não existem missões cadastradas.");
   } else {
     missoes.forEach((missao, index) => {
       console.log(
-        `\nÍndice: ${index + 1} \nNome da missão: ${
+        `\nÍndice: ${index + 1}\nNome da missão: ${
           missao.nome
-        } \nDestino da missão: ${missao.destino} \nPrioridade da missão: ${
+        }\nDestino da missão: ${missao.destino}\nPrioridade da missão: ${
           missao.prioridade
-        } \n Tripulantes: ${missao.tripulantes}\n`
+        }\nTripulantes: ${missao.tripulantes}\nConcluída: ${missao.status}\n`
       );
     });
   }
   exibirMenu();
 }
 
+function editarMissao() {
+  console.log("\n=======EDITAR MISSÃO=======\n");
+  if (missoes.length === 0) {
+    console.log("Não há nenhuma missão cadastrada para editar.");
+    exibirMenu();
+  }
+  console.log("Missões cadastradas:");
+  missoes.forEach((missao, index) => {
+    console.log(
+      `\nÍndice: ${index + 1}\nNome da missão: ${
+        missao.nome
+      }\nDestino da missão: ${missao.destino}\nPrioridade da missão: ${
+        missao.prioridade
+      }\nTripulantes: ${missao.tripulantes}\nConcluída: ${missao.status}\n`
+    );
+  });
+  rl.question("\nDigite o número da missão que deseja editar: ", (indice) => {
+    const i = parseInt(indice) - 1;
+    if (isNaN(i) || i < 0 || i >= missoes.length) {
+      console.log("Índice inválido.");
+      return exibirMenu();
+    }
+
+    console.log("\n=======OPÇÕES DE EDIÇÃO DA MISSÃO=======\n");
+    console.log("1 - Alterar nome da missão");
+    console.log("2 - Alterar o destino da missão");
+    console.log("3 - Alterar a prioridade da missão");
+    console.log("4 - Alterar os integrantes da missão");
+    menuEditar();
+
+    function menuEditar() {
+      rl.question("Informe o número da opção que deseja editar: ", (opcao) => {
+        let opcaoFormatada = parseInt(opcao);
+
+        switch (opcaoFormatada) {
+          case 1:
+            alterarNome();
+            break;
+          case 2:
+            alterarDestino();
+            break;
+          case 3:
+            alterarPrioridade();
+            break;
+          case 4:
+            alterarTripulantes();
+            break;
+          default:
+            console.log("Digite uma opção válida.");
+            menuEditar();
+            break;
+        }
+      });
+    }
+
+    function alterarNome() {
+      rl.question("Informe o novo nome: ", (novoNome) => {
+        missoes[i].nome = novoNome;
+        console.log("Nome alterado com sucesso.");
+        rl.question("Deseja alterar mais alguma coisa? (S/N): ", (opcao) => {
+          let opcaoFormatada = opcao.toLowerCase();
+
+          if (opcaoFormatada === "s") {
+            menuEditar();
+          } else if (opcaoFormatada === "n") {
+            exibirMenu();
+          } else {
+            console.log("Informe uma resposta válida.");
+          }
+        });
+      });
+    }
+
+    function alterarDestino() {
+      rl.question("Informe o novo destino: ", (novoDestino) => {
+        missoes[i].destino = novoDestino;
+        console.log("Destino alterado com sucesso.");
+        rl.question("Deseja alterar mais alguma coisa? (S/N): ", (opcao) => {
+          let opcaoFormatada = opcao.toLowerCase();
+
+          if (opcaoFormatada === "s") {
+            menuEditar();
+          } else if (opcaoFormatada === "n") {
+            exibirMenu();
+          } else {
+            console.log("Informe uma resposta válida.");
+          }
+        });
+      });
+    }
+
+    function alterarPrioridade() {
+      rl.question("Informe a nova prioridade: ", (novaPrioridade) => {
+        missoes[i].prioridade = parseInt(novaPrioridade);
+        console.log("Prioridade alterada com sucesso.");
+        rl.question("Deseja alterar mais alguma coisa? (S/N): ", (opcao) => {
+          let opcaoFormatada = opcao.toLowerCase();
+
+          if (opcaoFormatada === "s") {
+            menuEditar();
+          } else if (opcaoFormatada === "n") {
+            exibirMenu();
+          } else {
+            console.log("Informe uma resposta válida.");
+          }
+        });
+      });
+    }
+
+    function alterarTripulantes() {
+      rl.question("Informe os novos tripulantes: ", (novosTripulantes) => {
+        missoes[i].tripulantes = novosTripulantes;
+        console.log("Tripulantes alterados com sucesso.");
+        rl.question("Deseja alterar mais alguma coisa? (S/N): ", (opcao) => {
+          let opcaoFormatada = opcao.toLowerCase();
+
+          if (opcaoFormatada === "s") {
+            menuEditar();
+          } else if (opcaoFormatada === "n") {
+            exibirMenu();
+          } else {
+            console.log("Informe uma resposta válida.");
+          }
+        });
+      });
+    }
+  });
+}
 exibirMenu();
