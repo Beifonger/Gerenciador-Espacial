@@ -8,7 +8,7 @@ const rl = readline.createInterface({
 let missoes = [];
 
 function exibirMenu() {
-  console.log("=======GERENCIADOR DE MISSÕES ESPACIAIS=======\n");
+  console.log("======= GERENCIADOR DE MISSÕES ESPACIAIS =======\n");
   console.log("1 - Adicionar missão");
   console.log("2 - Listar missões em andamento");
   console.log("3 - Editar missão existente");
@@ -16,7 +16,7 @@ function exibirMenu() {
   console.log("5 - Filtrar por prioridade");
   console.log("6 - Ranking de destinos");
   console.log("7 - Listar por tripulante");
-  console.log("8 - SAIR");
+  console.log("8 - Sair do Sistema");
 
   rl.question("Escolha uma das opções: ", (opcao) => {
     let opcaoFormatada = parseInt(opcao);
@@ -55,7 +55,7 @@ function exibirMenu() {
 }
 
 function adicionarMissao() {
-  console.log("\n=======CADASTRO DE MISSÃO=======\n");
+  console.log("\n======= CADASTRO DE MISSÃO =======\n");
   rl.question("Informe o nome da missão: ", (nome) => {
     rl.question("Informe o destino (ex: Marte): ", (destino) => {
       function perguntarPrioridade() {
@@ -93,7 +93,7 @@ function adicionarMissao() {
 }
 
 function listarMissoes() {
-  console.log("\n=======LISTAR MISSÕES=======\n");
+  console.log("\n======= LISTAR MISSÕES =======\n");
   if (missoes.length === 0) {
     console.log("Não existem missões cadastradas.");
   } else {
@@ -111,7 +111,7 @@ function listarMissoes() {
 }
 
 function editarMissao() {
-  console.log("\n=======EDITAR MISSÃO=======\n");
+  console.log("\n======= EDITAR MISSÃO =======\n");
   if (missoes.length === 0) {
     console.log("Não há nenhuma missão cadastrada para editar.");
     exibirMenu();
@@ -133,7 +133,7 @@ function editarMissao() {
       return editarMissao();
     }
 
-    console.log("\n=======OPÇÕES DE EDIÇÃO DA MISSÃO=======\n");
+    console.log("\n======= OPÇÕES DE EDIÇÃO DA MISSÃO =======\n");
     console.log("1 - Alterar nome da missão");
     console.log("2 - Alterar o destino da missão");
     console.log("3 - Alterar a prioridade da missão");
@@ -240,7 +240,7 @@ function editarMissao() {
 }
 
 function atualizarStatus() {
-  console.log("\n=======ATUALIZAR STATUS=======\n");
+  console.log("\n======= ATUALIZAR STATUS =======\n");
   if (missoes.length === 0) {
     console.log("Não há nenhuma missão cadastrada para atualizar o status.");
     return exibirMenu();
@@ -257,30 +257,38 @@ function atualizarStatus() {
     );
   });
 
-  rl.question("\nDigite o número da missão que deseja marcar como concluída: ", (indice) => {
-    const i = parseInt(indice) - 1;
+  rl.question(
+    "\nDigite o número da missão que deseja marcar como concluída: ",
+    (indice) => {
+      const i = parseInt(indice) - 1;
 
-    if (isNaN(i) || i < 0 || i >= missoes.length) {
-      console.log("Índice inválido.");
-      return atualizarStatus();
-    }
-
-    rl.question("Tem certeza que deseja marcar essa missão como concluída e removê-la? (S/N): ", (opcao) => {
-      const opcaoFormatada = opcao.toLowerCase();
-
-      if (opcaoFormatada === "s") {
-        const nomeRemovida = missoes[i].nome;
-        missoes.splice(i, 1);
-        console.log(`Missão "${nomeRemovida}" concluída e removida com sucesso.`);
-        exibirMenu();
-      } else if (opcaoFormatada === "n") {
-        exibirMenu();
-      } else {
-        console.log("Informe uma opção válida.");
-        atualizarStatus();
+      if (isNaN(i) || i < 0 || i >= missoes.length) {
+        console.log("Índice inválido.");
+        return atualizarStatus();
       }
-    });
-  });
+
+      rl.question(
+        "Tem certeza que deseja marcar essa missão como concluída e removê-la? (S/N): ",
+        (opcao) => {
+          const opcaoFormatada = opcao.toLowerCase();
+
+          if (opcaoFormatada === "s") {
+            const nomeRemovida = missoes[i].nome;
+            missoes.splice(i, 1);
+            console.log(
+              `Missão "${nomeRemovida}" concluída e removida com sucesso.`
+            );
+            exibirMenu();
+          } else if (opcaoFormatada === "n") {
+            exibirMenu();
+          } else {
+            console.log("Informe uma opção válida.");
+            atualizarStatus();
+          }
+        }
+      );
+    }
+  );
 }
 
 function filtrarPorPrioridade() {
@@ -294,7 +302,11 @@ function filtrarPorPrioridade() {
   rl.question("Informe o nível de prioridade (1-5): ", (prioridade) => {
     const prioridadeFormatada = parseInt(prioridade);
 
-    if (isNaN(prioridadeFormatada) || prioridadeFormatada < 1 || prioridadeFormatada > 5) {
+    if (
+      isNaN(prioridadeFormatada) ||
+      prioridadeFormatada < 1 ||
+      prioridadeFormatada > 5
+    ) {
       console.log("Por favor, informe um número válido.");
       return filtrarPorPrioridade();
     }
@@ -317,5 +329,44 @@ function filtrarPorPrioridade() {
 
     exibirMenu();
   });
+}
+
+function rankingDestinos() {
+  console.log("\n======= RANKING DE DESTINOS =======\n");
+
+  if (missoes.length === 0) {
+    console.log("Não há nenhuma missão cadastrada.");
+    return exibirMenu();
+  }
+
+  const destinoContagem = {};
+
+  missoes.forEach((missao) => {
+    const destino = missao.destino;
+    if (!destinoContagem[destino]) {
+      destinoContagem[destino] = {
+        quantidade: 0,
+        missoes: [],
+      };
+    }
+    destinoContagem[destino].quantidade += 1;
+    destinoContagem[destino].missoes.push(missao.nome);
+  });
+
+  const ranking = Object.entries(destinoContagem).sort(
+    (a, b) => b[1].quantidade - a[1].quantidade
+  );
+
+  ranking.forEach(([destino, info], index) => {
+    console.log(`Rank ${index + 1}: ${destino}`);
+    console.log(`Total de missões: ${info.quantidade}`);
+    console.log("Missões:");
+    info.missoes.forEach((nome) => {
+      console.log(`- ${nome}`);
+    });
+    console.log("");
+  });
+
+  exibirMenu();
 }
 exibirMenu();
