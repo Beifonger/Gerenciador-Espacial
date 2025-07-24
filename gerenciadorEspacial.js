@@ -130,7 +130,7 @@ function editarMissao() {
     const i = parseInt(indice) - 1;
     if (isNaN(i) || i < 0 || i >= missoes.length) {
       console.log("Índice inválido.");
-      return exibirMenu();
+      return editarMissao();
     }
 
     console.log("\n=======OPÇÕES DE EDIÇÃO DA MISSÃO=======\n");
@@ -238,4 +238,44 @@ function editarMissao() {
     }
   });
 }
+
+function atualizarStatus() {
+  console.log("\n=======ATUALIZAR STATUS=======\n");
+  if (missoes.length === 0) {
+    console.log("Não há nenhuma missão cadastrada para atualizar o status.");
+    exibirMenu();
+  }
+  console.log("Missões cadastradas:");
+  missoes.forEach((missao, index) => {
+    console.log(
+      `\nÍndice: ${index + 1}\nNome da missão: ${
+        missao.nome
+      }\nDestino da missão: ${missao.destino}\nPrioridade da missão: ${
+        missao.prioridade
+      }\nTripulantes: ${missao.tripulantes}\nConcluída: ${missao.status}\n`
+    );
+  });
+  rl.question("\nDigite o número da missão que deseja editar: ", (indice) => {
+    const i = parseInt(indice) - 1;
+    if (isNaN(i) || i < 0 || i >= missoes.length) {
+      console.log("Índice inválido.");
+      return atualizarStatus();
+    }
+    rl.question("Marcar missão como concluída? (S/N): ", (opcao) => {
+      let opcaoFormatada = opcao.toLowerCase();
+      if (opcaoFormatada === "s") {
+        missoes[i].status = true;
+        console.log("Missão marcada como concluída.");
+        return exibirMenu();
+      } else if (opcaoFormatada === "n") {
+        return exibirMenu();
+      } else {
+        console.log("Informe uma opção válida.");
+        atualizarStatus();
+      }
+    });
+  });
+}
 exibirMenu();
+
+
